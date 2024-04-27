@@ -1,0 +1,499 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "UsersController_login",
+        "summary": "Get user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetailDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get successed!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Login user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successed!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Dashboard login"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Register successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Invalid username or password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Dashboard login"
+        ]
+      }
+    },
+    "/led/data": {
+      "post": {
+        "operationId": "LedController_createLed",
+        "summary": "Create new led records",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLedDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "LedController_getListData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/led/schedule": {
+      "post": {
+        "operationId": "LedController_createSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "LedController_updateSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScheduleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "LedController_deleteSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteScheduleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/led/schedule/{id}": {
+      "get": {
+        "operationId": "LedController_getScheduleList",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/led/brightness": {
+      "patch": {
+        "operationId": "LedController_updateBrightness",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLumiDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Led Controller",
+    "description": "The led control system",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "UserDetailDTO": {
+        "type": "object",
+        "properties": {}
+      },
+      "LoginDTO": {
+        "type": "object",
+        "properties": {}
+      },
+      "RegisterDTO": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateLedDTO": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "example": 10.876143961570557
+          },
+          "lon": {
+            "type": "number",
+            "example": 106.80443585691286
+          },
+          "name": {
+            "type": "string",
+            "example": "LED_DEMO"
+          }
+        },
+        "required": [
+          "lat",
+          "lon",
+          "name"
+        ]
+      },
+      "CreateScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "ledId": {
+            "type": "string",
+            "example": "6624cf2f9c51b2311c8a02ac"
+          },
+          "time": {
+            "type": "string",
+            "example": "12:00"
+          },
+          "value": {
+            "type": "number",
+            "example": 90
+          }
+        },
+        "required": [
+          "ledId",
+          "time",
+          "value"
+        ]
+      },
+      "UpdateScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "scheduleId": {
+            "type": "string",
+            "example": "6624e9206def0ab815d5d3a6"
+          },
+          "value": {
+            "type": "number",
+            "example": 50
+          },
+          "time": {
+            "format": "date-time",
+            "type": "string",
+            "example": "18:00"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "scheduleId",
+          "value",
+          "time",
+          "status"
+        ]
+      },
+      "DeleteScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "ledId": {
+            "type": "string",
+            "example": "662533343f4e7bc7f001b533"
+          },
+          "scheduleId": {
+            "type": "string",
+            "example": "662533573f4e7bc7f001b535"
+          }
+        },
+        "required": [
+          "ledId",
+          "scheduleId"
+        ]
+      },
+      "UpdateLumiDTO": {
+        "type": "object",
+        "properties": {
+          "ledId": {
+            "type": "string",
+            "example": "662533343f4e7bc7f001b533"
+          },
+          "value": {
+            "type": "number",
+            "example": 30
+          }
+        },
+        "required": [
+          "ledId",
+          "value"
+        ]
+      }
+    }
+  }
+}
