@@ -12,6 +12,11 @@ export class UpdateScheduleDTO {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: '6624e9206def0ab815d5d3a6' })
+  ledId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ example: '6624e9206def0ab815d5d3a6' })
   scheduleId: string;
 
   @IsOptional()

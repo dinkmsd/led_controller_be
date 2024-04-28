@@ -10,6 +10,7 @@ import { UsersModule } from './modules/user/users.module';
 import { LedController } from './modules/led/led.controller';
 import { LedModule } from './modules/led/led.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { DataGateway } from './modules/gateway/data.gateway';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     MqttModule,
     LedModule,
     ScheduleModule.forRoot(),
+    DataGateway,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService],

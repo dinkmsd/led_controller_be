@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 import { Schedule } from '../schedule';
-import { Type } from 'class-transformer';
 import { History } from '../history';
 
 @Schema()
@@ -48,11 +47,11 @@ export class Led {
   @Prop({ default: Date.now() })
   createAt: Date;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: History.name }] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: History.name }] })
   histories: History[];
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Schedule.name }],
+    type: [{ type: Types.ObjectId, ref: 'schedules' }],
   })
   schedules: Schedule[];
 }

@@ -154,11 +154,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       },
       "get": {
@@ -177,11 +172,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -215,11 +205,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       },
       "patch": {
@@ -248,11 +233,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       },
       "delete": {
@@ -281,11 +261,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -315,11 +290,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -350,11 +320,6 @@
         },
         "tags": [
           "led control"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     }
@@ -435,6 +400,10 @@
       "UpdateScheduleDTO": {
         "type": "object",
         "properties": {
+          "ledId": {
+            "type": "string",
+            "example": "6624e9206def0ab815d5d3a6"
+          },
           "scheduleId": {
             "type": "string",
             "example": "6624e9206def0ab815d5d3a6"
@@ -454,6 +423,7 @@
           }
         },
         "required": [
+          "ledId",
           "scheduleId",
           "value",
           "time",

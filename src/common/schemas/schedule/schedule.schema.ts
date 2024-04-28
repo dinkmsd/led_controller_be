@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsBoolean, IsMilitaryTime, IsNumber, IsString } from 'class-validator';
+import { Types } from 'mongoose';
+import { Led } from '../led';
 
 @Schema()
 export class Schedule {
+  @Prop({ type: Types.ObjectId, ref: Led.name })
+  led: Led;
+
   @Prop({ required: true })
   time: string;
 

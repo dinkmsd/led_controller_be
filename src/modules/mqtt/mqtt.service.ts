@@ -1,12 +1,15 @@
-import { error, info } from 'ps-logger';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { MqttClient, connect } from 'mqtt';
+import { LedService } from '../led/led.service';
 
 @Injectable()
 export class MqttService {
   public readonly mqtt: MqttClient;
-
-  constructor() {
+  constructor(
+    @Inject(forwardRef(() => LedService))
+    private ledService: LedService,
+  ) {
+    const logger = new Logger(MqttService.name);
     const host = process.env.MQTT_HOST;
     const port = process.env.MQTT_PORT;
     const connectUrl = `mqtt://${host}:${port}`;
@@ -21,24 +24,32 @@ export class MqttService {
     });
 
     this.mqtt.on('connect', () => {
-      info('Connected to MQTT server');
+      logger.log('Connected to MQTT server');
     });
 
     this.mqtt.subscribe('from-device', { qos: 1 });
 
     this.mqtt.on('error', function () {
-      error(connectUrl);
-      error('Error in connecting to CloudMQTT');
+      logger.debug(connectUrl);
+
+      logger.error('Error in connecting to CloudMQTT');
     });
 
     this.mqtt.on('message', function (topic, message) {
-      console.log('New message received!');
-      info(message.toString());
+      logger.log('New message received!');
+
+      logger.log(message.toString());
+      const jsonData = JSON.parse(message.toString());
+
+      if (jsonData['action'] === 'updateData') {
+        logger.log('Action: Update Data');
+        ledService.updateData(jsonData['data']);
+      }
     });
   }
 
   publish(topic: string, payload: string): string {
-    info(`Publishing to ${topic}`);
+    Logger.log(`Publishing to ${topic}`);
     this.mqtt.publish(topic, payload);
     return `Publishing to ${topic}`;
   }

@@ -20,8 +20,8 @@ import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 @BaseControllerDecorators({
   tag: 'led control',
-  apiBearerAuth: true,
-  useAuthGuard: true,
+  apiBearerAuth: false,
+  useAuthGuard: false,
 })
 @Controller('led')
 export class LedController {
