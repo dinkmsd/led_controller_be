@@ -10,7 +10,7 @@ async function bootstrap() {
   app.enableCors({
     allowedHeaders: '*',
     origin: '*',
-    credentials: true,
+    // credentials: true,
   });
 
   app.useGlobalPipes(

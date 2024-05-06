@@ -1,6 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({
+  toJSON: {
+    getters: true,
+  },
+})
 export class History {
   @Prop({ required: true })
   ledID: string;

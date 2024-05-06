@@ -40,21 +40,26 @@ export class LedService implements OnModuleInit {
 
   async getListData() {
     try {
-      const result = await this.ledModel.find({}, { schedule: 0, history: 0 });
+      const result = await this.ledModel.find(
+        {},
+        { schedules: 0, histories: 0 },
+      );
+      this.logger.log('Get data successed!');
       return result;
     } catch (e) {
-      error(e);
+      this.logger.error(e);
     }
   }
 
   async getListDataWithSchedule() {
     try {
       const result = await this.ledModel
-        .find({}, { history: 0 })
+        .find({}, { histories: 0 })
         .populate('schedules', null, Schedule.name);
+      this.logger.log('getListDataWithSchedule successed!');
       return result;
     } catch (e) {
-      error(e);
+      this.logger.error(e);
     }
   }
 
@@ -67,9 +72,25 @@ export class LedService implements OnModuleInit {
         lon: lon,
         status: true,
       });
+      this.logger.log('createLed successed!');
       return result;
     } catch (e) {
-      error(e);
+      this.logger.error(e);
+    }
+  }
+
+  private convertTime(timeString: string) {
+    const s = timeString.split(' ');
+    const hhmm = s[0].split(':');
+    switch (s[1]) {
+      case 'AM':
+        return { hour: parseInt(hhmm[0]), min: parseInt(hhmm[1]) };
+      case 'PM': {
+        let hh = parseInt(hhmm[0]);
+        hh += 12;
+        if (hh == 24) hh = 0;
+        return { hour: hh, min: parseInt(hhmm[1]) };
+      }
     }
   }
 
@@ -78,6 +99,7 @@ export class LedService implements OnModuleInit {
 
     try {
       const schedule = await this.scheduleModel.create({
+        led: ledId,
         time: time,
         value: value,
       });
@@ -92,18 +114,21 @@ export class LedService implements OnModuleInit {
           { new: true },
         )
         .populate('schedules', null, Schedule.name);
-      info('Create schedule successed!');
-      const getTime = schedule['time'].split(':');
-      const timeExpression = `${getTime[1]} ${getTime[0]} * * *`;
+      this.logger.log('Create schedule successed!');
+      const getTime = this.convertTime(schedule['time']);
+      const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
       this.cronjobService.addCronjob(
         schedule._id.toString(),
         timeExpression,
         this._scheduleProcess.bind(this, ledId, schedule.value),
       );
-      return result;
+      return {
+        message: 'Create schedule successed!',
+        data: result.schedules,
+      };
     } catch (e) {
       console.log(e);
-      error(e);
+      this.logger.error(e);
     }
   }
 
@@ -112,10 +137,13 @@ export class LedService implements OnModuleInit {
       const result = await this.ledModel
         .findById(id)
         .populate('schedules', null, Schedule.name);
-      info('Get schedule list successed!');
-      return result;
+      this.logger.log('Get schedule list successed!');
+      return {
+        message: 'Get list schedule successed!',
+        data: result.schedules,
+      };
     } catch (e) {
-      error(e);
+      this.logger.error(e);
     }
   }
 
@@ -131,7 +159,6 @@ export class LedService implements OnModuleInit {
     if (!isNil(status)) {
       dataUpdate['status'] = status;
     }
-    console.log(dataUpdate);
     try {
       const result = await this.scheduleModel.findOneAndUpdate(
         {
@@ -144,12 +171,12 @@ export class LedService implements OnModuleInit {
           new: true,
         },
       );
-      info('Update schedule successed!');
+      this.logger.log('Update schedule successed!');
 
-      this.cronjobService.deleteCronjob(scheduleId);
       if (result.status) {
-        const getTime = result['time'].split(':');
-        const timeExpression = `${getTime[1]} ${getTime[0]} * * *`;
+        this.cronjobService.deleteCronjob(scheduleId);
+        const getTime = this.convertTime(result['time']);
+        const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
         this.cronjobService.addCronjob(
           scheduleId,
           timeExpression,
@@ -159,7 +186,7 @@ export class LedService implements OnModuleInit {
 
       return result;
     } catch (e) {
-      error(e);
+      this.logger.error(e);
     }
   }
 
@@ -177,11 +204,14 @@ export class LedService implements OnModuleInit {
           },
         )
         .populate('schedules', null, Schedule.name);
-      info('Delete schedule successed!');
+      this.logger.log('Delete schedule successed!');
       this.cronjobService.deleteCronjob(scheduleId);
-      return result;
+      return {
+        message: 'Delete schedule successed!',
+        data: result.schedules,
+      };
     } catch (err) {
-      error(err);
+      this.logger.error(err);
     }
   }
 
@@ -192,15 +222,23 @@ export class LedService implements OnModuleInit {
     };
     try {
       this.mqttClient.publish('monitor/' + ledId, JSON.stringify(mqttData));
-      await this.ledModel.findByIdAndUpdate(
+      const led = await this.ledModel.findByIdAndUpdate(
         ledId,
         {
           $set: { brightness: value },
         },
         { new: true },
       );
+      this.logger.log('Update lumi successed!');
+      var message = {
+        action: 'update',
+        message: 'Successed',
+        data: led,
+      };
+      this.dataGateway.emitMessage('update', message);
+      return led;
     } catch (err) {
-      error(err);
+      this.logger.error(err);
     }
   }
 
@@ -221,7 +259,7 @@ export class LedService implements OnModuleInit {
       const data = await this.ledModel.findByIdAndUpdate(
         inputJson['id'],
         {
-          $push: { history: history },
+          $push: { histories: history },
           $set: {
             status: true,
             x: inputJson['x'],
@@ -234,19 +272,20 @@ export class LedService implements OnModuleInit {
             humi: inputJson['humi'],
             brightness: inputJson['lumi'],
           },
-          // history: 0
+          // histories: 0
         },
         { new: true },
       );
 
       var message = {
         action: 'update',
-        msg: 'Successed',
+        message: 'Successed',
         data: data,
       };
-      this.dataGateway.emitMessage(message);
+      this.dataGateway.emitMessage('update', message);
+      this.logger.log('updateData successed!');
     } catch (error) {
-      error(error);
+      this.logger.error(error);
     }
   }
 
@@ -256,8 +295,8 @@ export class LedService implements OnModuleInit {
       record.schedules.forEach(async (schedule) => {
         if (schedule.status) {
           const name = schedule['_id'].toString();
-          const getTime = schedule['time'].split(':');
-          const timeExpression = `${getTime[1]} ${getTime[0]} * * *`;
+          const getTime = this.convertTime(schedule['time']);
+          const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
           this.cronjobService.addCronjob(
             name,
             timeExpression,

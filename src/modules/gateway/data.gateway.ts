@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway(80)
 export class DataGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -42,7 +42,7 @@ export class DataGateway
     };
   }
 
-  emitMessage(data: any) {
-    this.io.emit('pong', data);
+  emitMessage(event: string, data: any) {
+    this.io.emit(event, data);
   }
 }

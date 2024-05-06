@@ -37,31 +37,37 @@ export class LedController {
     return this.ledService.createLed(data);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('/data')
   getListData() {
     return this.ledService.getListData();
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/schedule')
   createSchedule(@Body() data: CreateScheduleDTO) {
     return this.ledService.createSchedule(data);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('/schedule/:id')
   getScheduleList(@Param('id') id: string) {
     return this.ledService.getScheduleList(id);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Patch('/schedule')
   updateSchedule(@Body() data: UpdateScheduleDTO) {
     return this.ledService.updateSchedule(data);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Delete('/schedule')
   deleteSchedule(@Body() data: DeleteScheduleDTO) {
     return this.ledService.deleteSchedule(data);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Patch('/brightness')
   updateBrightness(@Body() data: UpdateLumiDTO) {
     return this.ledService.updateLumi(data);

@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { BaseControllerDecorators } from 'src/decorators/controller.decorator';
 import { AuthService } from './auth.service';
 import {
@@ -13,6 +20,20 @@ import { RegisterDTO } from './dtos/register.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @BaseControllerDecorators({
+    tag: 'Auth token',
+    apiBearerAuth: true,
+    useAuthGuard: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Auth successed!',
+  })
+  @Post('token')
+  authToken(@Request() body: any) {
+    return body.user;
+  }
 
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({

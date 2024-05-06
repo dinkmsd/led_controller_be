@@ -7,9 +7,130 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
+      }
+    },
+    "/group/create": {
+      "post": {
+        "operationId": "GroupController_creatGroup",
+        "summary": "Create new group records",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/list-group": {
+      "post": {
+        "operationId": "GroupController_getListGroup",
+        "summary": "Get list group records",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get list group successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/detail-group": {
+      "post": {
+        "operationId": "GroupController_getDetailGroup",
+        "summary": "Get detail group records",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDetailGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get detail group successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/create-led": {
+      "post": {
+        "operationId": "GroupController_createLed",
+        "summary": "Create new led to group records",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLedGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create new led successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
       }
     },
     "/users/login": {
@@ -47,6 +168,32 @@
         },
         "tags": [
           "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/token": {
+      "post": {
+        "operationId": "AuthController_authToken",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Dashboard login",
+          "Auth token"
         ],
         "security": [
           {
@@ -161,7 +308,17 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -191,9 +348,6 @@
         },
         "responses": {
           "200": {
-            "description": "Ok"
-          },
-          "201": {
             "description": ""
           },
           "400": {
@@ -222,7 +376,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -309,7 +470,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -341,17 +509,98 @@
       }
     },
     "schemas": {
+      "CreateGroupDTO": {
+        "type": "object",
+        "properties": {
+          "nameGroup": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nameGroup"
+        ]
+      },
+      "GetDetailGroupDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupId"
+        ]
+      },
+      "CreateLedGroupDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "example": 10.876143961570557
+          },
+          "lon": {
+            "type": "number",
+            "example": 106.80443585691286
+          },
+          "name": {
+            "type": "string",
+            "example": "LED_DEMO"
+          }
+        },
+        "required": [
+          "groupId",
+          "lat",
+          "lon",
+          "name"
+        ]
+      },
       "UserDetailDTO": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username"
+        ]
       },
       "LoginDTO": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
       },
       "RegisterDTO": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "username",
+          "password"
+        ]
       },
       "CreateLedDTO": {
         "type": "object",
@@ -384,7 +633,8 @@
           },
           "time": {
             "type": "string",
-            "example": "12:00"
+            "pattern": "/^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$/",
+            "example": "12:00 AM"
           },
           "value": {
             "type": "number",

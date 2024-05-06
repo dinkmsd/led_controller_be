@@ -14,8 +14,8 @@ export class CreateScheduleDTO {
   ledId: string;
 
   @IsNotEmpty()
-  @Matches(/^(?:[01]\d|2[0-3]):[0-5]\d$/)
-  @ApiProperty({ example: '12:00' })
+  @Matches(/^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$/)
+  @ApiProperty({ example: '12:00 AM' })
   time: string;
 
   @IsNotEmpty()

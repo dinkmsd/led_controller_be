@@ -7,14 +7,9 @@ interface ITokenData {
 
 export class TokenGenerator {
   static generate(user, expiredInSec: number): string {
-    const jwtToken = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-      },
-      process.env.JWT_SECRET_KEY as string,
-      { algorithm: 'RS256' },
-    );
+    const jwtToken = jwt.sign(user, process.env.JWT_SECRET_KEY as string, {
+      algorithm: 'RS256',
+    });
 
     return jwtToken;
   }

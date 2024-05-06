@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, VirtualType } from 'mongoose';
 import { Led } from '../led';
 
-@Schema()
+@Schema({
+  toJSON: {
+    getters: true,
+  },
+})
 export class Schedule {
   @Prop({ type: Types.ObjectId, ref: Led.name })
   led: Led;

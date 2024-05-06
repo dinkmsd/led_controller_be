@@ -10,7 +10,11 @@ export class AuthService {
 
   async register(data: RegisterDTO) {
     try {
-      const result = this.usersService.createUser(data.username, data.password);
+      const result = await this.usersService.createUser(
+        data.username,
+        data.password,
+        data.name,
+      );
       return result;
     } catch (error) {
       throw error;
@@ -18,7 +22,13 @@ export class AuthService {
   }
 
   async login(data: LoginDTO) {
-    const user = this.usersService.findUser(data.username);
-    return TokenGenerator.generate(user, 1000);
+    const user = await this.usersService.findUser(data.username);
+    const token = await TokenGenerator.generate(user, 1000);
+    return {
+      user,
+      token,
+    };
   }
+
+  async authToken() {}
 }

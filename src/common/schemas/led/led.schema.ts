@@ -2,9 +2,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Schedule } from '../schedule';
 import { History } from '../history';
+import { Group } from '../group';
 
-@Schema()
+@Schema({
+  toJSON: {
+    getters: true,
+  },
+})
 export class Led {
+  @Prop({ type: Types.ObjectId, ref: Group.name })
+  group: Group;
+
   @Prop({ required: true })
   name: string;
 

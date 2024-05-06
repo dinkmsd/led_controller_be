@@ -11,10 +11,11 @@ import { DataGateway } from '../gateway/data.gateway';
 @Module({
   imports: [
     forwardRef(() => MqttModule),
-    MongooseModule.forFeature([{ name: Led.name, schema: LedSchema }]),
     MongooseModule.forFeature([
+      { name: Led.name, schema: LedSchema },
       { name: Schedule.name, schema: ScheduleSchema },
     ]),
+
     CronJobModule,
   ],
   controllers: [LedController],
