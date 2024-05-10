@@ -18,6 +18,9 @@ export class Group {
     type: [{ type: Types.ObjectId, ref: 'leds' }],
   })
   leds: Led[];
+
+  @Prop({ default: true })
+  status: boolean;
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);

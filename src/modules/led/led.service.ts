@@ -19,12 +19,14 @@ import { MqttService } from '../mqtt/mqtt.service';
 import { Schedule } from 'src/common/schemas/schedule';
 import CronJobService from '../cronjob/cronjob.service';
 import { DataGateway } from '../gateway/data.gateway';
+import { History } from 'src/common/schemas/history';
 
 @Injectable()
 export class LedService implements OnModuleInit {
   constructor(
     @InjectModel(Led.name) private ledModel: Model<Led>,
     @InjectModel(Schedule.name) private scheduleModel: Model<Schedule>,
+    @InjectModel(History.name) private historyModel: Model<History>,
     private cronjobService: CronJobService,
     @Inject(forwardRef(() => MqttService))
     private mqttClient: MqttService,
@@ -50,6 +52,8 @@ export class LedService implements OnModuleInit {
       this.logger.error(e);
     }
   }
+
+  async getDetailLed() {}
 
   async getListDataWithSchedule() {
     try {
@@ -222,18 +226,25 @@ export class LedService implements OnModuleInit {
     };
     try {
       this.mqttClient.publish('monitor/' + ledId, JSON.stringify(mqttData));
-      const led = await this.ledModel.findByIdAndUpdate(
-        ledId,
-        {
-          $set: { brightness: value },
-        },
-        { new: true },
-      );
+      const led = await this.ledModel
+        .findByIdAndUpdate(
+          ledId,
+          {
+            $set: { brightness: value },
+          },
+          { new: true },
+        )
+        .select('-schedules -histories')
+        .lean();
       this.logger.log('Update lumi successed!');
       var message = {
         action: 'update',
         message: 'Successed',
-        data: led,
+        data: {
+          groupId: led.group,
+          ledId: led._id,
+          brightness: led.brightness,
+        },
       };
       this.dataGateway.emitMessage('update', message);
       return led;
@@ -247,8 +258,8 @@ export class LedService implements OnModuleInit {
       var randomTemp = Math.floor(Math.random() * (28 - 27) + 27);
       var randomHumi = Math.floor(Math.random() * (66 - 65) + 65);
       const history = {
-        temperature: inputJson['temp'] || randomTemp,
-        humidity: inputJson['humi'] || randomHumi,
+        temp: inputJson['temp'] || randomTemp,
+        humi: inputJson['humi'] || randomHumi,
         brightness: inputJson['lumi'],
         dateTime: new Date(),
         incli: inputJson['incli'],
@@ -256,10 +267,12 @@ export class LedService implements OnModuleInit {
         cellID: inputJson['cellID'],
       };
 
+      const historyRecord = await this.historyModel.create(history);
+
       const data = await this.ledModel.findByIdAndUpdate(
         inputJson['id'],
         {
-          $push: { histories: history },
+          $push: { histories: historyRecord._id },
           $set: {
             status: true,
             x: inputJson['x'],
@@ -280,8 +293,9 @@ export class LedService implements OnModuleInit {
       var message = {
         action: 'update',
         message: 'Successed',
-        data: data,
+        data,
       };
+      console.log(message);
       this.dataGateway.emitMessage('update', message);
       this.logger.log('updateData successed!');
     } catch (error) {

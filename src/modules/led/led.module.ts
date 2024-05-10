@@ -7,6 +7,7 @@ import { MqttModule } from '../mqtt/mqtt.module';
 import { Schedule, ScheduleSchema } from 'src/common/schemas/schedule';
 import { CronJobModule } from '../cronjob/cronjob.module';
 import { DataGateway } from '../gateway/data.gateway';
+import { History, HistorySchema } from 'src/common/schemas/history';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DataGateway } from '../gateway/data.gateway';
     MongooseModule.forFeature([
       { name: Led.name, schema: LedSchema },
       { name: Schedule.name, schema: ScheduleSchema },
+      { name: History.name, schema: HistorySchema },
     ]),
 
     CronJobModule,

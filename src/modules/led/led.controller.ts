@@ -44,6 +44,12 @@ export class LedController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Post('/led-detail')
+  getDetailLed(@Body() data: any) {
+    // return this.ledService.getDetailLed(data['ledId']);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Post('/schedule')
   createSchedule(@Body() data: CreateScheduleDTO) {
     return this.ledService.createSchedule(data);

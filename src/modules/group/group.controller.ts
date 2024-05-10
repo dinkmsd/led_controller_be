@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { GroupService } from './group.service';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CreateGroupDTO } from './dtos/create-group.dto';
@@ -30,7 +37,7 @@ export class GroupController {
     description: 'Get list group successed!',
   })
   @ApiOperation({ summary: 'Get list group records' })
-  @Post('/list-group')
+  @Get('/list-group')
   getListGroup() {
     return this.groupService.getListGroup();
   }

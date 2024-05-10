@@ -51,7 +51,7 @@
       }
     },
     "/group/list-group": {
-      "post": {
+      "get": {
         "operationId": "GroupController_getListGroup",
         "summary": "Get list group records",
         "parameters": [],
@@ -319,6 +319,26 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ]
+      }
+    },
+    "/led/led-detail": {
+      "post": {
+        "operationId": "LedController_getDetailLed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
           },
           "400": {
             "description": "Invalid input"

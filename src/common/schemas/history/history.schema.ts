@@ -7,13 +7,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 })
 export class History {
   @Prop({ required: true })
-  ledID: string;
+  led: string;
 
   @Prop({ required: true })
-  temperature: number;
+  temp: number;
 
   @Prop({ required: true })
-  humidity: number;
+  humi: number;
 
   @Prop({ required: true })
   brightness: number;
