@@ -11,9 +11,12 @@ import { DataGateway } from './modules/gateway/data.gateway';
 import { GroupController } from './modules/group/group.controller';
 import { GroupModule } from './modules/group/group.module';
 
+console.log(process.env.DB_URL);
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://0.0.0.0:27017/thesis'),
+    MongooseModule.forRoot(
+      'mongodb+srv://xuanlocok:lH0otbWNCCVTJijO@cluster0.cmpfhru.mongodb.net/?retryWrites=true&w=majority',
+    ),
     UsersModule,
     AuthModule,
     MqttModule,

@@ -258,6 +258,7 @@ export class LedService implements OnModuleInit {
       var randomTemp = Math.floor(Math.random() * (28 - 27) + 27);
       var randomHumi = Math.floor(Math.random() * (66 - 65) + 65);
       const history = {
+        led: inputJson['id'],
         temp: inputJson['temp'] || randomTemp,
         humi: inputJson['humi'] || randomHumi,
         brightness: inputJson['lumi'],
@@ -268,7 +269,6 @@ export class LedService implements OnModuleInit {
       };
 
       const historyRecord = await this.historyModel.create(history);
-
       const data = await this.ledModel.findByIdAndUpdate(
         inputJson['id'],
         {
