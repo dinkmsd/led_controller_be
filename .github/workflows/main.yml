@@ -31,7 +31,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
 
             # Run with user 
-            sudo -u xuanloc -i
+            sudo -u ${{ secrets.USERNAME }} -i
             
             # Navigate to the project directory
             cd /sources/led_controller_be
@@ -40,8 +40,8 @@ jobs:
             git pull origin main
   
             # Install dependencies (example for a Node.js project)
-            sudo -u ${{ secrets.USERNAME }} npm install
+            npm install
   
             # Restart the application (example for a PM2 managed Node.js app)      
-            sudo -u ${{ secrets.USERNAME }} pm2 restart thesis-api
+            pm2 restart thesis-api
           EOF
