@@ -31,7 +31,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
 
             # Run with user 
-            sudo -u ${{ secrets.USERNAME }} -i
+            sudo -u ${{ secrets.USERNAME }} -i << 'INNER_EOF'
             
             # Navigate to the project directory
             cd /sources/led_controller_be
