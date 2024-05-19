@@ -21,9 +21,26 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: run source
+      - name: Deploy to Azure VM
+        env:
+          HOST: '20.2.116.72'  # Replace with your Azure VM's IP
+          USER: 'xuanloc'     # Replace with your SSH username
         run: |
-          bash deploy.sh
+          ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+            # Navigate to the project directory
+            cd /sources/backend
+  
+            # Pull the latest changes
+            git pull origin main
+  
+            # Install dependencies (example for a Node.js project)
+            npm install
+  
+            # Restart the application (example for a PM2 managed Node.js app)
+            pm2 restart your-app-name
+  
+            # Any other deployment commands
+          EOF
           
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
