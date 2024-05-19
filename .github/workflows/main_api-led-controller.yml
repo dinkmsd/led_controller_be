@@ -20,11 +20,32 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+      
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.AZURE_VM_SSH_KEY }}
 
-      - name: npm install, build, and test
+      - name: Deploy to Azure VM
+        env:
+          HOST: '20.2.116.72'  # Replace with your Azure VM's IP
+          USER: 'xuanloc'     # Replace with your SSH username
         run: |
-          npm install
-          npm run build --if-present
+          ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+            # Navigate to the project directory
+            cd /sources/backend
+  
+            # Pull the latest changes
+            git pull origin main
+  
+            # Install dependencies (example for a Node.js project)
+            npm install
+  
+            # Restart the application (example for a PM2 managed Node.js app)
+            pm2 restart your-app-name
+  
+            # Any other deployment commands
+          EOF
           
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
