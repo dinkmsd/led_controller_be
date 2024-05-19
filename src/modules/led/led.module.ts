@@ -8,6 +8,7 @@ import { Schedule, ScheduleSchema } from 'src/common/schemas/schedule';
 import { CronJobModule } from '../cronjob/cronjob.module';
 import { DataGateway } from '../gateway/data.gateway';
 import { History, HistorySchema } from 'src/common/schemas/history';
+import { WebsocketClientService } from '../websocket-client/websocket-client.service';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { History, HistorySchema } from 'src/common/schemas/history';
     CronJobModule,
   ],
   controllers: [LedController],
-  providers: [LedService, DataGateway],
+  providers: [LedService, DataGateway, WebsocketClientService],
   exports: [LedService],
 })
 export class LedModule {}

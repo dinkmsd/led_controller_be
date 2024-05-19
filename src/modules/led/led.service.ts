@@ -18,8 +18,9 @@ import { UpdateLumiDTO } from './dtos/update-lumi.dto';
 import { MqttService } from '../mqtt/mqtt.service';
 import { Schedule } from 'src/common/schemas/schedule';
 import CronJobService from '../cronjob/cronjob.service';
-import { DataGateway } from '../gateway/data.gateway';
 import { History } from 'src/common/schemas/history';
+import { WebsocketClientService } from '../websocket-client/websocket-client.service';
+import { json } from 'express';
 
 @Injectable()
 export class LedService implements OnModuleInit {
@@ -30,7 +31,7 @@ export class LedService implements OnModuleInit {
     private cronjobService: CronJobService,
     @Inject(forwardRef(() => MqttService))
     private mqttClient: MqttService,
-    private dataGateway: DataGateway,
+    private websocketClientService: WebsocketClientService,
   ) {}
 
   private readonly logger = new Logger(LedService.name);
@@ -246,7 +247,8 @@ export class LedService implements OnModuleInit {
           brightness: led.brightness,
         },
       };
-      this.dataGateway.emitMessage('update', message);
+      // this.dataGateway.emitMessage('update', message);
+      this.websocketClientService.sendMessage(JSON.stringify(message));
       return led;
     } catch (err) {
       this.logger.error(err);
@@ -296,7 +298,8 @@ export class LedService implements OnModuleInit {
         data,
       };
       console.log(message);
-      this.dataGateway.emitMessage('update', message);
+      // this.dataGateway.emitMessage('update', message);
+      this.websocketClientService.sendMessage(JSON.stringify(message));
       this.logger.log('updateData successed!');
     } catch (error) {
       this.logger.error(error);

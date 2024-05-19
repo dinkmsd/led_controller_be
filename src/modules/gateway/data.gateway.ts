@@ -10,7 +10,9 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'ws';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  pingInterval: 300,
+})
 export class DataGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
