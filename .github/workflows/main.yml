@@ -19,7 +19,7 @@ jobs:
           node-version: '20.x'
       
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           
@@ -29,6 +29,10 @@ jobs:
           USER: ${{ secrets.USERNAME }}     # Replace with your SSH username
         run: |
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+
+            # Run with user 
+            sudo -u xuanloc -i
+            
             # Navigate to the project directory
             cd /sources/led_controller_be
   
@@ -36,8 +40,8 @@ jobs:
             git pull origin main
   
             # Install dependencies (example for a Node.js project)
-            npm install
+            sudo -u ${{ secrets.USERNAME }} npm install
   
             # Restart the application (example for a PM2 managed Node.js app)      
-            pm2 restart thesis-api
+            sudo -u ${{ secrets.USERNAME }} pm2 restart thesis-api
           EOF
