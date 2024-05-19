@@ -23,7 +23,7 @@ jobs:
 
       - name: run source
         run: |
-          ssh -o StrictHostKeyChecking=no xuanloc@20.2.116.72 'bash /sources/backend/deploy.sh'
+          bash deploy.sh
           
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
