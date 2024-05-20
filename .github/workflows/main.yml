@@ -34,7 +34,7 @@ jobs:
             sudo -u ${{ secrets.USERNAME }} -i
             
             # Navigate to the project directory
-            cd /sources/led_controller_be
+            cd /var/www/led_controller_be
   
             # Pull the latest changes
             git pull origin main
