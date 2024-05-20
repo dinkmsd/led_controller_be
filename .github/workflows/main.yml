@@ -1,48 +1,12 @@
-name: Deploy
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-      
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
-      - name: Deploy to Azure VM
-        env:
-          HOST: ${{ secrets.HOST }}  # Replace with your Azure VM's IP
-          USER: ${{ secrets.USERNAME }}     # Replace with your SSH username
-        run: |
-          ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
-
-            # Run with user 
-            sudo -u ${{ secrets.USERNAME }} -i
-            
-            # Navigate to the project directory
-            cd /var/www/led_controller_be
-
-            pm2 kill
-            # Pull the latest changes
-            git pull origin main
-  
-            # Install dependencies (example for a Node.js project)
-            npm install
-  
-            # Restart the application (example for a PM2 managed Node.js app)      
-            pm2 restart thesis-api
-          EOF
+deploy_dev:
+  stage: deploy
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "git clone https://github.com/dinkmsd/led_controller_be.git || true"
+    - ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "cd led_controller_be && chmod +x ./before-deploy.sh && ./before-deploy.sh"
+    - ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "cd led_controller_be && chmod +x ./deploy.sh && ./deploy.sh"
