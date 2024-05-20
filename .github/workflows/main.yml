@@ -46,6 +46,8 @@ jobs:
             echo "Build code"
             npm run build
 
+            pm2 list
+
             echo "Restart the application"      
             pm2 restart thesis-api
           EOF
