@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      
+
       - name: Setup SSH
         run: |
           apk add openssh-client
@@ -25,16 +25,15 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          
+
       - name: Clone Repository on Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "git clone https://github.com/dinkmsd/led_controller_be.git || true"
 
       - name: Run before-deploy.sh on Remote Server
-          run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./before-deploy.sh && ./before-deploy.sh"
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./before-deploy.sh && ./before-deploy.sh"
 
       - name: Run deploy.sh on Remote Server
-          run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./deploy.sh && ./deploy.sh"
-
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./deploy.sh && ./deploy.sh"
