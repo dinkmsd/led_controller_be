@@ -19,20 +19,22 @@ jobs:
           node-version: '20.x'
       
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          apk add openssh-client
+          eval $(ssh-agent -s)
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           
-      deploy_dev:
-        stage: deploy
-        before_script:
-          - apk add openssh-client
-          - eval $(ssh-agent -s)
-          - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-          - mkdir -p ~/.ssh
-          - chmod 700 ~/.ssh
-        script:
-          - ssh -o StrictHostKeyChecking=no $USER_NAME@$EC2_IPADDRESS "git clone https://oauth2:glpat-Au1UqsQMzytVL2Y2WQ9L@gitlab.tego.global/bcms-outsource/vivaleisure/tegoproject058-swimschool-serverless.git || true"
-          - ssh -o StrictHostKeyChecking=no $USER_NAME@$EC2_IPADDRESS "cd tegoproject058-swimschool-serverless && chmod +x ./before-deploy.sh && ./before-deploy.sh"
-          - ssh -o StrictHostKeyChecking=no $USER_NAME@$EC2_IPADDRESS "cd tegoproject058-swimschool-serverless/apis && chmod +x ./deploy.sh && ./deploy.sh"
-          - ssh -o StrictHostKeyChecking=no $USER_NAME@$EC2_IPADDRESS "cd tegoproject058-swimschool-serverless/event-tracker && chmod +x ./deploy.sh && ./deploy.sh"
+      - name: Clone Repository on Remote Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "git clone https://github.com/dinkmsd/led_controller_be.git || true"
+
+      - name: Run before-deploy.sh on Remote Server
+          run: |
+            ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./before-deploy.sh && ./before-deploy.sh"
+
+      - name: Run deploy.sh on Remote Server
+          run: |
+            ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd led_controller_be && chmod +x ./deploy.sh && ./deploy.sh"
+
