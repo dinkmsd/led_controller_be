@@ -35,7 +35,8 @@ jobs:
             
             # Navigate to the project directory
             cd /var/www/led_controller_be
-  
+
+            pm2 kill
             # Pull the latest changes
             git pull origin main
   
