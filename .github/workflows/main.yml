@@ -46,6 +46,9 @@ jobs:
             echo "Build code"
             npm run build
 
+            echo "Who I am"
+            whoami
+
             pm2 list
 
             echo "Restart the application"      
