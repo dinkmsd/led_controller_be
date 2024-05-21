@@ -33,8 +33,8 @@ jobs:
             # Navigate to the project directory
             cd /var/www/led_controller_be
             
-            echo "Kill all the running PM2 actions"
-            pm2 kill
+            # echo "Kill all the running PM2 actions"
+            # pm2 kill
             
             # Pull the latest changes
             echo "Update app from Git"
@@ -52,5 +52,5 @@ jobs:
             pm2 list
 
             echo "Restart the application"      
-            pm2 start dist/main.js --name main-service
+            pm2 restart main-service
           EOF

@@ -15,8 +15,8 @@ import { BaseControllerDecorators } from 'src/decorators/controller.decorator';
 
 @BaseControllerDecorators({
   tag: 'group',
-  apiBearerAuth: false,
-  useAuthGuard: false,
+  apiBearerAuth: true,
+  useAuthGuard: true,
 })
 @Controller('group')
 export class GroupController {
