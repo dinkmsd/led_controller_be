@@ -52,5 +52,5 @@ jobs:
             pm2 list
 
             echo "Restart the application"      
-            pm2 restart main-service
+            pm2 start dist/main.js --name main-service
           EOF
