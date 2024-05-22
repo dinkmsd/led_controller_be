@@ -38,8 +38,7 @@ export class LedService implements OnModuleInit {
   private readonly logger = new Logger(LedService.name);
 
   async onModuleInit() {
-    // await this._initLedSchedule();
-    console.log(timezone);
+    await this._initLedSchedule();
     // throw new Error('Method not implemented.');
   }
 
