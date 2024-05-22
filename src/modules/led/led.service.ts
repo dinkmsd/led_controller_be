@@ -62,7 +62,7 @@ export class LedService implements OnModuleInit {
       const result = await this.ledModel
         .find({}, { histories: 0 })
         .populate('schedules', null, Schedule.name);
-      this.logger.log('getListDataWithSchedule successed!');
+      this.logger.log('[getListDataWithSchedule] successed!');
       return result;
     } catch (e) {
       this.logger.error(e);
@@ -78,7 +78,7 @@ export class LedService implements OnModuleInit {
         lon: lon,
         status: true,
       });
-      this.logger.log('createLed successed!');
+      this.logger.log('[createLed] successed!');
       return result;
     } catch (e) {
       this.logger.error(e);
@@ -245,8 +245,8 @@ export class LedService implements OnModuleInit {
         action: 'update',
         message: 'Successed',
         data: {
-          groupId: led.group,
-          ledId: led._id,
+          group: led.group,
+          id: led._id,
           brightness: led.brightness,
         },
       };
