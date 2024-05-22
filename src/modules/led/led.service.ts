@@ -20,7 +20,9 @@ import { Schedule } from 'src/common/schemas/schedule';
 import CronJobService from '../cronjob/cronjob.service';
 import { History } from 'src/common/schemas/history';
 import { DataGateway } from '../gateway/data.gateway';
+require('dotenv/config');
 
+const timezone = parseInt(process.env.GMT);
 @Injectable()
 export class LedService implements OnModuleInit {
   constructor(
@@ -36,7 +38,8 @@ export class LedService implements OnModuleInit {
   private readonly logger = new Logger(LedService.name);
 
   async onModuleInit() {
-    await this._initLedSchedule();
+    // await this._initLedSchedule();
+    console.log(timezone);
     // throw new Error('Method not implemented.');
   }
 
@@ -88,11 +91,13 @@ export class LedService implements OnModuleInit {
     const hhmm = s[0].split(':');
     switch (s[1]) {
       case 'AM':
-        return { hour: parseInt(hhmm[0]), min: parseInt(hhmm[1]) };
+        const hh = (parseInt(hhmm[0]) - timezone + 24) % 24;
+        return { hour: hh, min: parseInt(hhmm[1]) };
       case 'PM': {
         let hh = parseInt(hhmm[0]);
         hh += 12;
         if (hh == 24) hh = 0;
+        hh = (hh - timezone + 24) % 24;
         return { hour: hh, min: parseInt(hhmm[1]) };
       }
     }

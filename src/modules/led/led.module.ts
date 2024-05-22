@@ -17,7 +17,6 @@ import { History, HistorySchema } from 'src/common/schemas/history';
       { name: Schedule.name, schema: ScheduleSchema },
       { name: History.name, schema: HistorySchema },
     ]),
-
     CronJobModule,
   ],
   controllers: [LedController],
