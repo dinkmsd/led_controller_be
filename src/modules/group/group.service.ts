@@ -21,9 +21,25 @@ export class GroupService {
 
   async createGroup(data: CreateGroupDTO) {
     try {
-      return await this.groupModel.create({
+      const group = await this.groupModel.create({
         groupName: data.nameGroup,
       });
+
+      const id = group._id;
+      const groupName = group.groupName;
+      const numLeds = group.leds.length;
+      const ledActive = group.leds.filter((e) => e.status === true).length;
+      const status = group.status;
+      const result = {
+        id,
+        numLeds,
+        ledActive,
+        ledError: 0,
+        groupName,
+        leds: group.leds,
+        status,
+      };
+      return result;
     } catch (error) {
       this.logger.error(error);
     }
@@ -113,7 +129,7 @@ export class GroupService {
         status: true,
       });
 
-      return await this.groupModel
+      await this.groupModel
         .findOneAndUpdate(
           { _id: groupId },
           {
@@ -124,6 +140,7 @@ export class GroupService {
           { new: true },
         )
         .populate('leds', null, Led.name);
+      return newLed;
     } catch (error) {
       this.logger.error(error);
     }

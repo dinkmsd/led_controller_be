@@ -47,6 +47,11 @@
         },
         "tags": [
           "group"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },
@@ -68,6 +73,11 @@
         },
         "tags": [
           "group"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },
@@ -99,6 +109,11 @@
         },
         "tags": [
           "group"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },
@@ -130,6 +145,11 @@
         },
         "tags": [
           "group"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },

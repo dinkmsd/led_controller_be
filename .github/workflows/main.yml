@@ -25,16 +25,16 @@ jobs:
 
       - name: Deploy to Azure VM
         env:
-          HOST: ${{ secrets.HOST }} # Replace with your Azure VM's IP
-          USER: ${{ secrets.USERNAME }} # Replace with your SSH username
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USERNAME }}
         run: |
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
 
             # Navigate to the project directory
             cd /var/www/led_controller_be
             
-            # echo "Kill all the running PM2 actions"
-            # pm2 kill
+            echo "Kill all the running PM2 actions"
+            pm2 kill
             
             # Pull the latest changes
             echo "Update app from Git"

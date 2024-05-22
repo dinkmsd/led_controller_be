@@ -8,11 +8,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'ws';
+import { Server } from 'socket.io';
 
-@WebSocketGateway({
-  pingInterval: 300,
-})
+@WebSocketGateway(4433)
 export class DataGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -24,10 +22,10 @@ export class DataGateway
   }
 
   handleConnection(client: any, ...args: any[]) {
-    // const { sockets } = this.io.sockets;
+    const { sockets } = this.io.sockets;
 
     this.logger.log(`Client id: ${client.id} connected`);
-    // this.logger.debug(`Number of connected clients: ${sockets.size}`);
+    this.logger.debug(`Number of connected clients: ${sockets.size}`);
   }
 
   handleDisconnect(client: any) {
