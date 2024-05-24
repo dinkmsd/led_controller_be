@@ -1,20 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateGroupDTO } from './dtos/create-group.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Group } from 'src/common/schemas/group';
-import { Model, model } from 'mongoose';
+import { Model } from 'mongoose';
 import { GetDetailGroupDTO } from './dtos/get-group-list.dto';
 import { Led } from 'src/common/schemas/led';
 import { CreateLedGroupDTO } from './dtos/create-led-group.dto';
 import { Schedule } from 'src/common/schemas/schedule';
 import { History } from 'src/common/schemas/history';
-import path from 'path';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class GroupService {
   constructor(
     @InjectModel(Group.name) private groupModel: Model<Group>,
     @InjectModel(Led.name) private ledModel: Model<Led>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   private readonly logger = new Logger(GroupService.name);

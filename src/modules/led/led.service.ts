@@ -122,7 +122,7 @@ export class LedService implements OnModuleInit {
           { new: true },
         )
         .populate('schedules', null, Schedule.name);
-      this.logger.log('Create schedule successed!');
+      this.logger.log('[createSchedule] successed!');
       const getTime = this.convertTime(schedule['time']);
       const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
       this.cronjobService.addCronjob(

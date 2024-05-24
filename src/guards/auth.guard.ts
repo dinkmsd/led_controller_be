@@ -14,14 +14,15 @@ export class AuthGuard implements CanActivate {
       'Bearer ',
       '',
     );
-
-    const verifyTokenForUser = TokenGenerator.verify(token);
-
-    if (!token || !verifyTokenForUser) {
+    try {
+      const verifyTokenForUser = TokenGenerator.verify(token);
+      if (!token || !verifyTokenForUser) {
+        throw 'Auth error';
+      }
+      request['user'] = verifyTokenForUser;
+    } catch (error) {
       throw BusinessExceptions.unauthorized();
     }
-
-    request['user'] = verifyTokenForUser;
 
     return true;
   }
