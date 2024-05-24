@@ -9,7 +9,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Led } from 'src/common/schemas/led';
 import { CreateLedDTO } from './dtos/create-led.dto';
-import { error, info } from 'ps-logger';
 import { CreateScheduleDTO } from './dtos/create-schedule.dto';
 import { UpdateScheduleDTO } from './dtos/update-schedule.dto';
 import { isNil } from 'lodash';

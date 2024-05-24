@@ -10,22 +10,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { GroupController } from './modules/group/group.controller';
 import { GroupModule } from './modules/group/group.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CacheModule } from '@nestjs/cache-manager';
 
-console.log(process.env.TTL);
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    CacheModule.registerAsync({
-      isGlobal: true,
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        ttl: 3000,
-        url: configService.get('REDIS_URL'),
-      }),
-      inject: [ConfigService],
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({

@@ -15,7 +15,6 @@ export class GroupService {
   constructor(
     @InjectModel(Group.name) private groupModel: Model<Group>,
     @InjectModel(Led.name) private ledModel: Model<Led>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   private readonly logger = new Logger(GroupService.name);
