@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Led } from '../led';
+import { GroupSchedule } from '../group_schedule/group-schedule.schema';
 
 @Schema({
   toJSON: {
@@ -18,6 +19,11 @@ export class Group {
     type: [{ type: Types.ObjectId, ref: 'leds' }],
   })
   leds: Led[];
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: 'schedules' }],
+  })
+  schedules: GroupSchedule[];
 
   @Prop({ default: true })
   status: boolean;

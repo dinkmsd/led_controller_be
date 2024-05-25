@@ -9,16 +9,16 @@ import {
   Matches,
 } from 'class-validator';
 
-export class UpdateScheduleDTO {
+export class GroupUpdateScheduleDTO {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ example: '6624e9206def0ab815d5d3a6' })
-  ledId: string;
+  @ApiProperty({ example: '66514686f731c9503c7b4fb6' })
+  scheId: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ example: '6624e9206def0ab815d5d3a6' })
-  scheduleId: string;
+  @ApiProperty({ example: '6645af562c2ff75648cbeaec' })
+  groupId: string;
 
   @IsOptional()
   @IsInt()

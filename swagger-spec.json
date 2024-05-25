@@ -47,11 +47,6 @@
         },
         "tags": [
           "group"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -73,11 +68,6 @@
         },
         "tags": [
           "group"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -109,11 +99,6 @@
         },
         "tags": [
           "group"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
         ]
       }
     },
@@ -145,11 +130,162 @@
         },
         "tags": [
           "group"
-        ],
-        "security": [
-          {
-            "bearer": []
+        ]
+      }
+    },
+    "/group/create-schedule": {
+      "post": {
+        "operationId": "GroupController_createSchedule",
+        "summary": "Create new led to group records",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupScheduleDTO"
+              }
+            }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "Create new schedule successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/update-status": {
+      "post": {
+        "operationId": "GroupController_updateStatus",
+        "summary": "Update group status",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update group status successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/schedule/{id}": {
+      "get": {
+        "operationId": "GroupController_getScheduleList",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/schedule": {
+      "patch": {
+        "operationId": "GroupController_updateSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupUpdateScheduleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupController_deleteSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupDeleteScheduleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
         ]
       }
     },
@@ -597,6 +733,95 @@
           "name"
         ]
       },
+      "CreateGroupScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "example": "6624cf2f9c51b2311c8a02ac"
+          },
+          "time": {
+            "type": "string",
+            "pattern": "/^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$/",
+            "example": "12:00 AM"
+          },
+          "value": {
+            "type": "number",
+            "example": 90
+          }
+        },
+        "required": [
+          "groupId",
+          "time",
+          "value"
+        ]
+      },
+      "UpdateStatusDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "groupId",
+          "status"
+        ]
+      },
+      "GroupUpdateScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "scheId": {
+            "type": "string",
+            "example": "66514686f731c9503c7b4fb6"
+          },
+          "groupId": {
+            "type": "string",
+            "example": "6645af562c2ff75648cbeaec"
+          },
+          "value": {
+            "type": "number",
+            "example": 50
+          },
+          "time": {
+            "format": "date-time",
+            "type": "string",
+            "pattern": "/^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$/",
+            "example": "12:00 AM"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "scheId",
+          "groupId",
+          "value",
+          "time",
+          "status"
+        ]
+      },
+      "GroupDeleteScheduleDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "example": "662533343f4e7bc7f001b533"
+          },
+          "scheduleId": {
+            "type": "string",
+            "example": "662533573f4e7bc7f001b535"
+          }
+        },
+        "required": [
+          "groupId",
+          "scheduleId"
+        ]
+      },
       "UserDetailDTO": {
         "type": "object",
         "properties": {
@@ -705,7 +930,8 @@
           "time": {
             "format": "date-time",
             "type": "string",
-            "example": "18:00"
+            "pattern": "/^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$/",
+            "example": "12:00 AM"
           },
           "status": {
             "type": "boolean",

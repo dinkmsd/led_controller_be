@@ -19,6 +19,7 @@ import { Schedule } from 'src/common/schemas/schedule';
 import CronJobService from '../cronjob/cronjob.service';
 import { History } from 'src/common/schemas/history';
 import { DataGateway } from '../gateway/data.gateway';
+import { Group } from 'src/common/schemas/group';
 require('dotenv/config');
 
 const timezone = parseInt(process.env.GMT);
@@ -102,6 +103,7 @@ export class LedService implements OnModuleInit {
   }
 
   async createSchedule(data: CreateScheduleDTO) {
+    console.log(data);
     const { ledId, time, value } = data;
 
     try {
@@ -181,7 +183,7 @@ export class LedService implements OnModuleInit {
       this.logger.log('Update schedule successed!');
 
       if (result.status) {
-        this.cronjobService.deleteCronjob(scheduleId);
+        this.cronjobService.safeDeleteCronjob(scheduleId);
         const getTime = this.convertTime(result['time']);
         const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
         this.cronjobService.addCronjob(
@@ -189,6 +191,10 @@ export class LedService implements OnModuleInit {
           timeExpression,
           this._scheduleProcess.bind(this, ledId, result.value),
         );
+      }
+
+      if (!result.status && !isNil(status)) {
+        this.cronjobService.safeDeleteCronjob(scheduleId);
       }
 
       return result;
@@ -212,7 +218,7 @@ export class LedService implements OnModuleInit {
         )
         .populate('schedules', null, Schedule.name);
       this.logger.log('Delete schedule successed!');
-      this.cronjobService.deleteCronjob(scheduleId);
+      this.cronjobService.safeDeleteCronjob(scheduleId);
       return {
         message: 'Delete schedule successed!',
         data: result.schedules,
@@ -228,7 +234,7 @@ export class LedService implements OnModuleInit {
       lumi: value,
     };
     try {
-      this.mqttClient.publish('monitor/' + ledId, JSON.stringify(mqttData));
+      this.mqttClient.publish('led/' + ledId, JSON.stringify(mqttData));
       const led = await this.ledModel
         .findByIdAndUpdate(
           ledId,
@@ -328,8 +334,17 @@ export class LedService implements OnModuleInit {
     });
   }
 
-  private _scheduleProcess(ledId: string, value: number) {
+  private async _scheduleProcess(ledId: string, value: number) {
     this.logger.log(`Modify led: ${ledId}`);
-    this.updateLumi({ ledId: ledId, value: value });
+    const led = await this.ledModel
+      .findById({ _id: ledId })
+      .populate('group', null, Group.name);
+    this.logger.log(led);
+    if (led.group.status) {
+      this.updateLumi({ ledId: ledId, value: value });
+      this.logger.log(`Modify successed!`);
+    } else {
+      this.logger.error('It running group manage mode');
+    }
   }
 }
