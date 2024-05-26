@@ -159,8 +159,6 @@ export class GroupService implements OnModuleInit {
         };
       });
 
-      console.log(resBody);
-
       return resBody;
     } catch (error) {
       this.logger.error(error);
@@ -181,7 +179,6 @@ export class GroupService implements OnModuleInit {
       const ledActive = detailGroup.leds.filter(
         (e) => e.status === true,
       ).length;
-      console.log(detailGroup);
       return {
         id: detailGroup.id,
         status: detailGroup.status,
@@ -383,7 +380,6 @@ export class GroupService implements OnModuleInit {
           },
         )
         .populate('schedules', null, GroupSchedule.name);
-      console.log(result);
       this.logger.log('Delete schedule successed!');
       this.cronjobService.safeDeleteCronjob(scheduleId);
       return {

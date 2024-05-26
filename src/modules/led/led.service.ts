@@ -103,7 +103,6 @@ export class LedService implements OnModuleInit {
   }
 
   async createSchedule(data: CreateScheduleDTO) {
-    console.log(data);
     const { ledId, time, value } = data;
 
     try {
@@ -304,7 +303,6 @@ export class LedService implements OnModuleInit {
         message: 'Successed',
         data,
       };
-      console.log(message);
       this.dataGateway.emitMessage('update', message);
       this.logger.log('updateData successed!');
     } catch (error) {
@@ -339,8 +337,7 @@ export class LedService implements OnModuleInit {
     const led = await this.ledModel
       .findById({ _id: ledId })
       .populate('group', null, Group.name);
-    this.logger.log(led);
-    if (led.group.status) {
+    if (!led.group.status) {
       this.updateLumi({ ledId: ledId, value: value });
       this.logger.log(`Modify successed!`);
     } else {
