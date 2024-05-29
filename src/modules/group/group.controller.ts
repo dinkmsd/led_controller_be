@@ -19,6 +19,7 @@ import { CreateGroupScheduleDTO } from './dtos/create-schedule.dto';
 import { UpdateStatusDTO } from './dtos/update-status.dto';
 import { GroupUpdateScheduleDTO } from './dtos/group-update-schedule.dto';
 import { GroupDeleteScheduleDTO } from './dtos/group-delete-schedule.dto';
+import { DeleteGroupDTO } from './dtos/delete-group.dto';
 
 @BaseControllerDecorators({
   tag: 'group',
@@ -57,6 +58,16 @@ export class GroupController {
   @Post('/detail-group')
   getDetailGroup(@Body() data: GetDetailGroupDTO) {
     return this.groupService.getDetailGroup(data);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Delete group successed!',
+  })
+  @ApiOperation({ summary: 'Delete group' })
+  @Delete('/delete-group')
+  deleteGroup(@Body() data: DeleteGroupDTO) {
+    return this.groupService.deleteGroup(data);
   }
 
   @HttpCode(HttpStatus.OK)

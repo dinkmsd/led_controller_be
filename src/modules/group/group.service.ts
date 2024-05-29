@@ -16,6 +16,8 @@ import { UpdateStatusDTO } from './dtos/update-status.dto';
 import { isNil } from 'lodash';
 import { GroupUpdateScheduleDTO } from './dtos/group-update-schedule.dto';
 import { GroupDeleteScheduleDTO } from './dtos/group-delete-schedule.dto';
+import { DeleteGroupDTO } from './dtos/delete-group.dto';
+import { ConfigService } from '@nestjs/config';
 const timezone = parseInt(process.env.GMT);
 
 @Injectable()
@@ -27,6 +29,7 @@ export class GroupService implements OnModuleInit {
     private scheduleModel: Model<GroupSchedule>,
     private cronjobService: CronJobService,
     private mqttClient: MqttService,
+    private configService: ConfigService,
   ) {}
 
   private readonly logger = new Logger(GroupService.name);
@@ -93,7 +96,12 @@ export class GroupService implements OnModuleInit {
       lumi: value,
     };
     try {
-      this.mqttClient.publish('group/' + groupId, JSON.stringify(mqttData));
+      const defaultPath = this.configService.get<string>('DEFAULT_TOPIC');
+
+      this.mqttClient.publish(
+        defaultPath + '/group/' + groupId,
+        JSON.stringify(mqttData),
+      );
       this.logger.log('Update lumi successed!');
     } catch (err) {
       this.logger.error(err);
@@ -222,6 +230,28 @@ export class GroupService implements OnModuleInit {
     } catch (error) {
       this.logger.error(error);
     }
+  }
+
+  async deleteGroup(data: DeleteGroupDTO) {
+    try {
+      const group = await this.groupModel
+        .findOneAndDelete({ _id: data.groupId }, { new: true })
+        .populate({
+          path: 'leds',
+          populate: [
+            {
+              path: 'schedules',
+              model: Schedule.name,
+            },
+            {
+              path: 'histories',
+              model: History.name,
+            },
+          ],
+          model: Led.name,
+        });
+      return group;
+    } catch (error) {}
   }
 
   async createSchedule(data: CreateGroupScheduleDTO) {

@@ -20,6 +20,7 @@ import CronJobService from '../cronjob/cronjob.service';
 import { History } from 'src/common/schemas/history';
 import { DataGateway } from '../gateway/data.gateway';
 import { Group } from 'src/common/schemas/group';
+import { ConfigService } from '@nestjs/config';
 require('dotenv/config');
 
 const timezone = parseInt(process.env.GMT);
@@ -33,6 +34,7 @@ export class LedService implements OnModuleInit {
     @Inject(forwardRef(() => MqttService))
     private mqttClient: MqttService,
     private dataGateway: DataGateway,
+    private configService: ConfigService,
   ) {}
 
   private readonly logger = new Logger(LedService.name);
@@ -94,6 +96,7 @@ export class LedService implements OnModuleInit {
         return { hour: hh, min: parseInt(hhmm[1]) };
       case 'PM': {
         let hh = parseInt(hhmm[0]);
+        if (hh === 12) return { hour: hh, min: parseInt(hhmm[1]) };
         hh += 12;
         if (hh == 24) hh = 0;
         hh = (hh - timezone + 24) % 24;
@@ -104,7 +107,6 @@ export class LedService implements OnModuleInit {
 
   async createSchedule(data: CreateScheduleDTO) {
     const { ledId, time, value } = data;
-
     try {
       const schedule = await this.scheduleModel.create({
         led: ledId,
@@ -125,6 +127,7 @@ export class LedService implements OnModuleInit {
       this.logger.log('[createSchedule] successed!');
       const getTime = this.convertTime(schedule['time']);
       const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
+      this.logger.debug(`[timeExpression] Time expression: ${timeExpression}`);
       this.cronjobService.addCronjob(
         schedule._id.toString(),
         timeExpression,
@@ -232,8 +235,12 @@ export class LedService implements OnModuleInit {
     const mqttData = {
       lumi: value,
     };
+    const defaultPath = this.configService.get<string>('DEFAULT_TOPIC');
     try {
-      this.mqttClient.publish('led/' + ledId, JSON.stringify(mqttData));
+      this.mqttClient.publish(
+        defaultPath + '/led/' + ledId,
+        JSON.stringify(mqttData),
+      );
       const led = await this.ledModel
         .findByIdAndUpdate(
           ledId,
