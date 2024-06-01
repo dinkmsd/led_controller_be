@@ -48,8 +48,8 @@ export class MqttService {
       if (jsonData['action'] === 'updateData') {
         logger.log('Action: Update Data');
         logger.log('Data: ');
-        logger.log(jsonData['data']);
-        ledService.updateData(jsonData['data']);
+        logger.log(jsonData);
+        ledService.updateData(jsonData);
       }
     });
   }
