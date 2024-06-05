@@ -14,8 +14,23 @@
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "resolveJsonModule": true,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@modules": ["src/modules"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@interfaces": ["src/interfaces"],
+      "@utils/*": ["src/utils/*"],
+      "@utils": ["src/utils"],
+      "@guards/*": ["src/guards/*"],
+      "@guards": ["src/guards"],
+      "@entities/*": ["src/entities/*"],
+      "@entities": ["src/entities"],
+      "@dtos/*": ["src/dtos/*"],
+      "@dtos": ["src/dtos"]
+    }
   }
 }

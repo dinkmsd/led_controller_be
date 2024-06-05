@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { MqttClient, connect } from 'mqtt';
 import { LedService } from '../led/led.service';
-import { ConfigService } from '@nestjs/config';
+import { configs } from '@utils/configs/config';
+import { NotificationService } from '@modules/notification/notification.service';
 
 @Injectable()
 export class MqttService {
@@ -9,23 +10,24 @@ export class MqttService {
   constructor(
     @Inject(forwardRef(() => LedService))
     private ledService: LedService,
-    private configService: ConfigService,
+    // @Inject(forwardRef(() => NotificationService))
+    // private notificationService: NotificationService,
   ) {
     const logger = new Logger(MqttService.name);
-    const host = this.configService.get<string>('MQTT_HOST');
-    const port = this.configService.get<number>('MQTT_PORT');
-    const username = this.configService.get<string>('MQTT_USER');
-    const password = this.configService.get<string>('MQTT_PASSWORD');
-    const defaultPath = this.configService.get<string>('DEFAULT_TOPIC');
+    const host = configs.mqttHost;
+    const port = configs.mqttPort;
+    const username = configs.mqttUser;
+    const password = configs.mqttPassword;
+    const defaultPath = configs.defaultTopic;
     const connectUrl = `mqtt://${host}:${port}`;
     const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
     this.mqtt = connect(connectUrl, {
       clientId: clientId,
       clean: true,
-      connectTimeout: parseInt(process.env.connectTimeout, 10),
+      connectTimeout: parseInt(configs.connectTimeout, 10),
       username: username,
       password: password,
-      reconnectPeriod: parseInt(process.env.reconnectPeriod, 10),
+      reconnectPeriod: parseInt(configs.reconnectPeriod, 10),
     });
 
     this.mqtt.on('connect', () => {
@@ -48,8 +50,14 @@ export class MqttService {
       if (jsonData['action'] === 'updateData') {
         logger.log('Action: Update Data');
         logger.log('Data: ');
-        logger.log(jsonData['data']);
-        ledService.updateData(jsonData['data']);
+        logger.log(jsonData);
+        ledService.updateData(jsonData);
+      }
+      if (jsonData['action'] === 'noti') {
+        logger.log('Action: Update Data');
+        logger.log('Data: ');
+        logger.log(jsonData);
+        ledService.updateData(jsonData);
       }
     });
   }

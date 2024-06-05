@@ -17,6 +17,7 @@ import { UpdateLumiDTO } from './dtos/update-lumi.dto';
 import { DeleteScheduleDTO } from './dtos/delete-schedule.dto';
 import { UpdateScheduleDTO } from './dtos/update-schedule.dto';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { LedUpdateModeDTO } from './dtos/led-update-mode.dto';
 
 @BaseControllerDecorators({
   tag: 'led control',
@@ -79,6 +80,12 @@ export class LedController {
     return this.ledService.updateLumi(data);
   }
 
+
+  @HttpCode(HttpStatus.OK)
+  @Patch('/update-mode')
+  updateMode(@Body() data: LedUpdateModeDTO) {
+    return this.ledService.updateMode(data);
+  }
   // @Get('/demo')
   // demo() {
   //   return this.ledService.getScheduleDemo('6624e32341a54231f2eb7fbd');

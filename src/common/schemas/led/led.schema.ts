@@ -62,6 +62,9 @@ export class Led {
     type: [{ type: Types.ObjectId, ref: 'schedules' }],
   })
   schedules: Schedule[];
+
+  @Prop({ default: false })
+  autoMode: boolean;
 }
 
 export const LedSchema = SchemaFactory.createForClass(Led);

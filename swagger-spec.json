@@ -1,20 +1,13 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/": {
+    "/health": {
       "get": {
-        "operationId": "AppController_getHello",
+        "operationId": "AppController_resendOTP",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": ""
           }
         }
       }
@@ -89,6 +82,37 @@
         "responses": {
           "200": {
             "description": "Get detail group successed!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/group/delete-group": {
+      "delete": {
+        "operationId": "GroupController_deleteGroup",
+        "summary": "Delete group",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Delete group successed!"
           },
           "400": {
             "description": "Invalid input"
@@ -289,49 +313,6 @@
         ]
       }
     },
-    "/users/login": {
-      "post": {
-        "operationId": "UsersController_login",
-        "summary": "Get user",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDetailDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Get successed!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "number"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        },
-        "tags": [
-          "User"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
     "/auth/token": {
       "post": {
         "operationId": "AuthController_authToken",
@@ -426,6 +407,100 @@
         },
         "tags": [
           "Dashboard login"
+        ]
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "UsersController_login",
+        "summary": "Get user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetailDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get successed!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/update-fcm-token/{id}": {
+      "patch": {
+        "operationId": "UsersController_updateFcmToken",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FcmTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },
@@ -666,6 +741,93 @@
           "led control"
         ]
       }
+    },
+    "/led/update-mode": {
+      "patch": {
+        "operationId": "LedController_updateMode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LedUpdateModeDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "led control"
+        ]
+      }
+    },
+    "/notifications": {
+      "post": {
+        "operationId": "NotificationsController_sendNotification",
+        "summary": "Test notification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created notification!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Notification control"
+        ]
+      },
+      "get": {
+        "operationId": "NotificationsController_getNotification",
+        "summary": "get notification",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get notification!"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Notification control"
+        ]
+      }
     }
   },
   "info": {
@@ -697,6 +859,17 @@
         ]
       },
       "GetDetailGroupDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupId"
+        ]
+      },
+      "DeleteGroupDTO": {
         "type": "object",
         "properties": {
           "groupId": {
@@ -822,17 +995,6 @@
           "scheduleId"
         ]
       },
-      "UserDetailDTO": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "username"
-        ]
-      },
       "LoginDTO": {
         "type": "object",
         "properties": {
@@ -865,6 +1027,33 @@
           "name",
           "username",
           "password"
+        ]
+      },
+      "UserDetailDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "FcmTokenDto": {
+        "type": "object",
+        "properties": {
+          "oldToken": {
+            "type": "string",
+            "example": ""
+          },
+          "newToken": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "required": [
+          "newToken"
         ]
       },
       "CreateLedDTO": {
@@ -978,6 +1167,40 @@
         "required": [
           "ledId",
           "value"
+        ]
+      },
+      "LedUpdateModeDTO": {
+        "type": "object",
+        "properties": {
+          "ledId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ledId",
+          "status"
+        ]
+      },
+      "NotificationDTO": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "ledId": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "ledId",
+          "event"
         ]
       }
     }

@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import * as fs from 'fs';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as serviceAccount from '@utils/configs/firebase/push-notification.config.json';
+import * as admin from 'firebase-admin';
+
 require('dotenv/config');
 
 async function bootstrap() {
@@ -10,7 +13,6 @@ async function bootstrap() {
   app.enableCors({
     allowedHeaders: '*',
     origin: '*',
-    // credentials: true,
   });
 
   app.useGlobalPipes(
@@ -30,12 +32,15 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     fs.writeFileSync('./swagger-spec.json', JSON.stringify(document, null, 2));
   }
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('docs', app, document);
 
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  });
   const port = process.env.PORT || 8080;
 
   await app.listen(port, () => {
-    console.log(`Server is running at: localhost:${port}`);
+    console.log(`Server is running at: http://localhost:${port}/docs`);
   });
 }
 bootstrap();

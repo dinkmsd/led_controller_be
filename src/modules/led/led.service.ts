@@ -20,10 +20,10 @@ import CronJobService from '../cronjob/cronjob.service';
 import { History } from 'src/common/schemas/history';
 import { DataGateway } from '../gateway/data.gateway';
 import { Group } from 'src/common/schemas/group';
-import { ConfigService } from '@nestjs/config';
+import { configs } from '@utils/configs/config';
+import { LedUpdateModeDTO } from './dtos/led-update-mode.dto';
 require('dotenv/config');
 
-const timezone = parseInt(process.env.GMT);
 @Injectable()
 export class LedService implements OnModuleInit {
   constructor(
@@ -34,7 +34,6 @@ export class LedService implements OnModuleInit {
     @Inject(forwardRef(() => MqttService))
     private mqttClient: MqttService,
     private dataGateway: DataGateway,
-    private configService: ConfigService,
   ) {}
 
   private readonly logger = new Logger(LedService.name);
@@ -92,14 +91,14 @@ export class LedService implements OnModuleInit {
     const hhmm = s[0].split(':');
     switch (s[1]) {
       case 'AM':
-        const hh = (parseInt(hhmm[0]) - timezone + 24) % 24;
+        const hh = (parseInt(hhmm[0]) - parseInt(configs.timezone) + 24) % 24;
         return { hour: hh, min: parseInt(hhmm[1]) };
       case 'PM': {
         let hh = parseInt(hhmm[0]);
         if (hh === 12) return { hour: hh, min: parseInt(hhmm[1]) };
         hh += 12;
         if (hh == 24) hh = 0;
-        hh = (hh - timezone + 24) % 24;
+        hh = (hh - parseInt(configs.timezone) + 24) % 24;
         return { hour: hh, min: parseInt(hhmm[1]) };
       }
     }
@@ -235,7 +234,7 @@ export class LedService implements OnModuleInit {
     const mqttData = {
       lumi: value,
     };
-    const defaultPath = this.configService.get<string>('DEFAULT_TOPIC');
+    const defaultPath = configs.defaultTopic;
     try {
       this.mqttClient.publish(
         defaultPath + '/led/' + ledId,
@@ -344,11 +343,46 @@ export class LedService implements OnModuleInit {
     const led = await this.ledModel
       .findById({ _id: ledId })
       .populate('group', null, Group.name);
-    if (!led.group.status) {
+    if (!led.group.status && !led.autoMode) {
       this.updateLumi({ ledId: ledId, value: value });
       this.logger.log(`Modify successed!`);
     } else {
       this.logger.error('It running group manage mode');
+    }
+  }
+
+  async getById(ledId: string): Promise<Led> {
+    return await this.ledModel.findById(ledId);
+  }
+
+  async updateMode(data: LedUpdateModeDTO) {
+    try {
+      const result = await this.ledModel
+        .findOneAndUpdate(
+          { _id: data.ledId },
+          { $set: { autoMode: data.status } },
+          {
+            new: true,
+          },
+        )
+        .populate('schedules', null, Schedule.name);
+      if (result.autoMode) {
+        const { ledId } = data;
+        const mqttData = {
+          lumi: 300,
+        };
+        console.log(mqttData);
+        const defaultPath = configs.defaultTopic;
+        this.mqttClient.publish(
+          defaultPath + '/led/' + ledId,
+          JSON.stringify(mqttData),
+        );
+      }
+
+      this.logger.log('Update group status successed!');
+      return result;
+    } catch (err) {
+      this.logger.error(err);
     }
   }
 }

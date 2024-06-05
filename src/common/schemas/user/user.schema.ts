@@ -20,6 +20,12 @@ export class User {
 
   @Prop({ required: true, default: 0 })
   role: number;
+
+  @Prop({
+    type: Array,
+    index: true,
+  })
+  fcmTokens: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

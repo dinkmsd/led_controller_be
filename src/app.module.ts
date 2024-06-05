@@ -1,39 +1,39 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MqttModule } from './modules/mqtt/mqtt.module';
-import { UsersModule } from './modules/user/users.module';
-import { LedModule } from './modules/led/led.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GroupController } from './modules/group/group.controller';
-import { GroupModule } from './modules/group/group.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { configs } from '@utils/configs/config';
+import { redisStore } from 'cache-manager-redis-yet';
+import * as MODULES from '@modules';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthenticationGuard } from '@guards/authentication.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    MongooseModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGODB_URL'),
-        retryDelay: 500,
-        retryAttempts: 3,
-        autoIndex: true,
-        autoCreate: true,
-      }),
-      inject: [ConfigService],
-    }),
-    UsersModule,
-    AuthModule,
-    MqttModule,
-    LedModule,
+    MongooseModule.forRoot(configs.mongoHost),
+    // CacheModule.registerAsync({
+    //   isGlobal: true,
+    //   useFactory: async () => ({
+    //     store: await redisStore({
+    //       password: configs.redisPassword,
+    //       socket: {
+    //         host: configs.redisHost,
+    //         port: Number(configs.redisPort),
+    //       },
+    //     }),
+    //   }),
+    // }),
     ScheduleModule.forRoot(),
-    GroupModule,
+    ...Object.values(MODULES),
   ],
   controllers: [AppController, GroupController],
-  providers: [AppService],
+  providers: [
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthenticationGuard,
+    // },
+  ],
 })
 export class AppModule {}

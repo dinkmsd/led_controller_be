@@ -17,8 +17,7 @@ import { isNil } from 'lodash';
 import { GroupUpdateScheduleDTO } from './dtos/group-update-schedule.dto';
 import { GroupDeleteScheduleDTO } from './dtos/group-delete-schedule.dto';
 import { DeleteGroupDTO } from './dtos/delete-group.dto';
-import { ConfigService } from '@nestjs/config';
-const timezone = parseInt(process.env.GMT);
+import { configs } from '@utils/configs/config';
 
 @Injectable()
 export class GroupService implements OnModuleInit {
@@ -29,7 +28,6 @@ export class GroupService implements OnModuleInit {
     private scheduleModel: Model<GroupSchedule>,
     private cronjobService: CronJobService,
     private mqttClient: MqttService,
-    private configService: ConfigService,
   ) {}
 
   private readonly logger = new Logger(GroupService.name);
@@ -44,13 +42,13 @@ export class GroupService implements OnModuleInit {
     const hhmm = s[0].split(':');
     switch (s[1]) {
       case 'AM':
-        const hh = (parseInt(hhmm[0]) - timezone + 24) % 24;
+        const hh = (parseInt(hhmm[0]) - Number(configs.timezone) + 24) % 24;
         return { hour: hh, min: parseInt(hhmm[1]) };
       case 'PM': {
         let hh = parseInt(hhmm[0]);
         hh += 12;
         if (hh == 24) hh = 0;
-        hh = (hh - timezone + 24) % 24;
+        hh = (hh - Number(configs.timezone) + 24) % 24;
         return { hour: hh, min: parseInt(hhmm[1]) };
       }
     }
@@ -96,7 +94,7 @@ export class GroupService implements OnModuleInit {
       lumi: value,
     };
     try {
-      const defaultPath = this.configService.get<string>('DEFAULT_TOPIC');
+      const defaultPath = configs.defaultTopic;
 
       this.mqttClient.publish(
         defaultPath + '/group/' + groupId,

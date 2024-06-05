@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { FcmTokenDto } from '@dtos/user.dto';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/common/schemas/user';
@@ -6,6 +7,10 @@ import { User } from 'src/common/schemas/user';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  async findById(id: string): Promise<User> {
+    return this.userModel.findById(id);
+  }
 
   async findUser(username: string) {
     try {
@@ -45,6 +50,37 @@ export class UsersService {
   async getUserDetail(userName: string) {
     const username = userName.toLowerCase();
     const user = await this.userModel.findOne({ username });
+    return user;
+  }
+
+  async updateFcmToken(_id: string, dto: FcmTokenDto) {
+    const { oldToken, newToken } = dto;
+
+    const duplicateFcmToken = await this.userModel.find({
+      fcmTokens: newToken,
+    });
+    if (duplicateFcmToken) {
+      console.log('Duplicate fcm token');
+      return;
+    }
+    // Find the user and remove the oldToken
+    let user = await this.userModel.findByIdAndUpdate(
+      _id,
+      { $pull: { fcmTokens: oldToken } },
+      { new: true },
+    );
+
+    if (!user) {
+      throw new BadRequestException(`User with ID ${_id} not found`);
+    }
+
+    // Find the user again and add the newToken
+    user = await this.userModel.findByIdAndUpdate(
+      _id,
+      { $addToSet: { fcmTokens: newToken } },
+      { new: true },
+    );
+
     return user;
   }
 }

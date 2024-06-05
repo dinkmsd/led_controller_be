@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
+import { Public } from '@utils/decorator/public.decorator';
 
 @BaseControllerDecorators({ tag: 'Dashboard login' })
 @Controller('auth')
@@ -30,6 +31,7 @@ export class AuthController {
   @ApiOkResponse({
     description: 'Auth successed!',
   })
+  @Public()
   @Post('token')
   authToken(@Request() body: any) {
     return body.user;
@@ -41,6 +43,7 @@ export class AuthController {
     type: Number,
   })
   @ApiOperation({ summary: 'Login user' })
+  @Public()
   @Post('login')
   login(@Body() data: LoginDTO) {
     return this.authService.login(data);
@@ -53,6 +56,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: 'Invalid username or password',
   })
+  @Public()
   @Post('register')
   register(@Body() data: RegisterDTO) {
     return this.authService.register(data);

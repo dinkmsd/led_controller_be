@@ -1,8 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { BaseControllerDecorators } from 'src/decorators/controller.decorator';
 import { UsersService } from './users.service';
 import { UserDetailDTO } from './dtos/user-detail.dto';
+import { Public } from '@utils/decorator/public.decorator';
+import { FcmTokenDto } from '@dtos/user.dto';
 
 @BaseControllerDecorators({
   tag: 'User',
@@ -21,5 +31,10 @@ export class UsersController {
   @Post('login')
   login(@Body() data: UserDetailDTO) {
     return this.usersService.getUserDetail(data.username);
+  }
+
+  @Patch('update-fcm-token/:id')
+  updateFcmToken(@Param('id') id: string, @Body() dto: FcmTokenDto) {
+    return this.usersService.updateFcmToken(id, dto);
   }
 }

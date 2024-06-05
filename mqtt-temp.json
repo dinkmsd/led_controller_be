@@ -1,0 +1,15 @@
+{
+  "action": "updateData",
+  "data": {
+    "id": "6645af812c2ff75648cbeaef",
+    "temp": 30,
+    "humi": 80,
+    "lumi": 10,
+    "incli": "45",
+    "rsrp": -115,
+    "cellID": 9869,
+    "x": 30,
+    "y": 30,
+    "z": 40
+  }
+}
