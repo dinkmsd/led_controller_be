@@ -63,7 +63,7 @@ export class UsersService {
     const duplicateFcmToken = await this.userModel.find({
       fcmTokens: newToken,
     });
-    if (duplicateFcmToken != null) {
+    if (duplicateFcmToken.length > 0) {
       console.log('Duplicate fcm token');
       return;
     }
