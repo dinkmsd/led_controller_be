@@ -69,6 +69,7 @@ export class NotificationService {
   async getNotification() {
     const notifications = await this.notificationFirebaseModel
       .find({})
+      .sort({ createdAt: -1 })
       .populate({
         path: 'led',
         populate: [
