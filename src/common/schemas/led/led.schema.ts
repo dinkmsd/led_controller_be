@@ -55,6 +55,9 @@ export class Led {
   @Prop({ default: Date.now() })
   createAt: Date;
 
+  @Prop({ default: Date.now() })
+  updatedAt: Date;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: History.name }] })
   histories: History[];
 

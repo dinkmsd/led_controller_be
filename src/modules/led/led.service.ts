@@ -244,7 +244,7 @@ export class LedService implements OnModuleInit {
         .findByIdAndUpdate(
           ledId,
           {
-            $set: { brightness: value },
+            $set: { brightness: value, updatedAt: new Date() },
           },
           { new: true },
         )
@@ -258,6 +258,7 @@ export class LedService implements OnModuleInit {
           group: led.group,
           id: led._id,
           brightness: led.brightness,
+          updatedAt: led.updatedAt,
         },
       };
       this.dataGateway.emitMessage('update', message);
@@ -286,7 +287,7 @@ export class LedService implements OnModuleInit {
       const data = await this.ledModel.findByIdAndUpdate(
         inputJson['id'],
         {
-          $push: { histories: historyRecord._id },
+          // $push: { histories: historyRecord._id },
           $set: {
             status: true,
             x: inputJson['x'],
@@ -298,6 +299,7 @@ export class LedService implements OnModuleInit {
             temp: inputJson['temp'],
             humi: inputJson['humi'],
             brightness: inputJson['lumi'],
+            updatedAt: new Date(),
           },
           // histories: 0
         },

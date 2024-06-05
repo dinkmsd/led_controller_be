@@ -8,10 +8,12 @@ import { Schedule, ScheduleSchema } from 'src/common/schemas/schedule';
 import { CronJobModule } from '../cronjob/cronjob.module';
 import { DataGateway } from '../gateway/data.gateway';
 import { History, HistorySchema } from 'src/common/schemas/history';
+import { NotificationsModule } from '..';
 
 @Module({
   imports: [
     forwardRef(() => MqttModule),
+    forwardRef(() => NotificationsModule),
     MongooseModule.forFeature([
       { name: Led.name, schema: LedSchema },
       { name: Schedule.name, schema: ScheduleSchema },

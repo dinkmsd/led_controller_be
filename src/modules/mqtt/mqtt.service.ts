@@ -10,8 +10,8 @@ export class MqttService {
   constructor(
     @Inject(forwardRef(() => LedService))
     private ledService: LedService,
-    // @Inject(forwardRef(() => NotificationService))
-    // private notificationService: NotificationService,
+    @Inject(forwardRef(() => NotificationService))
+    private notificationService: NotificationService,
   ) {
     const logger = new Logger(MqttService.name);
     const host = configs.mqttHost;
@@ -57,7 +57,7 @@ export class MqttService {
         logger.log('Action: Update Data');
         logger.log('Data: ');
         logger.log(jsonData);
-        ledService.updateData(jsonData);
+        notificationService.setNotification(jsonData);
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { NotificationDTO } from './dtos/notification.dto';
 import { getMessaging, Message } from 'firebase-admin/messaging';
 import { NotificationFirebase } from '@entities/notification.entity';
@@ -17,18 +17,20 @@ export class NotificationService {
     @InjectModel(NotificationFirebase.name)
     private readonly notificationFirebaseModel: Model<NotificationFirebase>,
     private userService: UsersService,
+    @Inject(forwardRef(() => LedService))
     private ledService: LedService,
   ) {}
 
   async sendNotification(recipient: ISendNotification) {
+    const led = await this.ledService.getById(recipient.ledId);
+    if (!led) return;
     await this.notificationFirebaseModel.create({
       title: recipient.title,
       led: recipient.ledId,
       event: recipient.event,
     });
 
-    const led = await this.ledService.getById(recipient.ledId);
-
+    console.log(led);
     if (recipient.fcmTokens && recipient.fcmTokens.length > 0) {
       const uniqueFcmTokens = [...new Set(recipient.fcmTokens)];
 
@@ -83,5 +85,19 @@ export class NotificationService {
       });
     console.log(notifications);
     return notifications;
+  }
+
+  async setNotification(inputJson: any) {
+    const users = await this.userService.getUser();
+    let fcmTokens = [];
+    users.map((user) => {
+      fcmTokens.push(...user.fcmTokens);
+    });
+    await this.sendNotification({
+      fcmTokens,
+      title: 'Something Error',
+      ledId: inputJson['id'],
+      event: NOTIFICATION_LED_ALERT_EVENT.MAINTAIN,
+    });
   }
 }

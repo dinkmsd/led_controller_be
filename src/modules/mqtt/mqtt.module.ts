@@ -5,7 +5,7 @@ import { LedModule } from '../led/led.module';
 import { NotificationsModule } from '..';
 
 @Module({
-  imports: [forwardRef(() => LedModule)],
+  imports: [forwardRef(() => LedModule), forwardRef(() => NotificationsModule)],
   providers: [MqttService],
   controllers: [MqttController],
   exports: [MqttService],

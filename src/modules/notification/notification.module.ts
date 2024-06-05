@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { NotificationsController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -6,7 +6,7 @@ import {
   NotificationFirebase,
   NotificationFirebaseSchema,
 } from '@entities/index';
-import { LedModule, UsersModule } from '..';
+import { LedModule, MqttModule, UsersModule } from '..';
 
 @Module({
   imports: [
@@ -17,9 +17,11 @@ import { LedModule, UsersModule } from '..';
       },
     ]),
     UsersModule,
-    LedModule,
+    forwardRef(() => LedModule),
+    forwardRef(() => MqttModule),
   ],
   controllers: [NotificationsController],
   providers: [NotificationService],
+  exports: [NotificationService],
 })
 export class NotificationsModule {}

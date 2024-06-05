@@ -276,11 +276,12 @@ export class GroupService implements OnModuleInit {
       const getTime = this.convertTime(schedule['time']);
       const timeExpression = `${getTime.min} ${getTime.hour} * * *`;
       this.logger.debug(`[timeExpression] ${timeExpression}`);
-      this.cronjobService.addCronjob(
-        schedule._id.toString(),
-        timeExpression,
-        this._scheduleProcess.bind(this, groupId, schedule.value),
-      );
+      if (result.status)
+        this.cronjobService.addCronjob(
+          schedule._id.toString(),
+          timeExpression,
+          this._scheduleProcess.bind(this, groupId, schedule.value),
+        );
       return {
         message: 'Create schedule successed!',
         data: result.schedules,
